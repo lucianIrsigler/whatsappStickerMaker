@@ -1,0 +1,98 @@
+﻿<Window x:Class="whatsappStickerMaker.MainWindow"
+        ResizeMode="NoResize" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:whatsappStickerMaker"
+        xmlns:userControls="clr-namespace:whatsappStickerMaker.view.userControls"
+        mc:Ignorable="d"
+        Title="Whatsapp Sticker Maker" Height="650" Width="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="487*"/>
+            <ColumnDefinition Width="13*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+
+        <Grid Grid.Row="0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <userControls:customButton Grid.Column="0" Height="50" Width="175" VerticalAlignment="Top"
+                                       HorizontalAlignment="Center" Margin="0,12,0,0"
+                                       CustomText="Create" FontSize="14" FontWeight="DemiBold"
+                                       x:Name="createButton"
+                                       />
+            <Grid Grid.Column="1">
+                <userControls:customToggleButton Content="test"></userControls:customToggleButton>
+
+            </Grid>
+
+
+        </Grid>
+        <Grid Grid.Row="1" Name="infoAboutPackGrid" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="1">
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="2" Name="imageHolderGrid" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+        </Grid>
+        <Grid Grid.Row="3" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <userControls:customButton Grid.Column="0" x:Name="clearButton"
+                                       Height="50" Width="175" VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       CustomText="Clear" FontSize="14" FontWeight="DemiBold"
+                                       />
+
+            <userControls:customButton Grid.Column="1" x:Name="clearDataButton"
+                                       Height="50" Width="175" VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       CustomText="Clear Data" FontSize="14" FontWeight="DemiBold"
+                                       />
+
+            <userControls:customButton Grid.Column="2" x:Name="exportButton"
+                                       Height="50" Width="175" VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"
+                                       CustomText="Export" FontSize="14" FontWeight="DemiBold"
+                                       />
+        </Grid>
+    </Grid>
+</Window>
