@@ -7,11 +7,14 @@ using whatsappStickerMaker.view.userControls;
 namespace whatsappStickerMaker
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Window that holds the grids and manages the grid's visibility
     /// </summary>
     public partial class MainWindow : Window
     {
         private bool gridCreate = false;
+
+        //used to track when an image has been set
+        private bool[,] imagesSet = new bool[3,10];
 
         public MainWindow()
         {
@@ -22,17 +25,22 @@ namespace whatsappStickerMaker
             exportButton.ClickButton += ExportButtonClick;
         }
 
-        //onclick events
+        /// <summary>
+        /// Creates the grids required for sticker creation
+        /// </summary>
         private void CreateButtonClick(object sender, RoutedEventArgs e)
         {
             if (!gridCreate)
             {
+                //if the visibility is set to hidden then initialize the grids
                 if (!imageHolderGrid.Visibility.Equals(Visibility.Hidden)) {
                     InitImageGrid();
                     InitPackInfoGrid();
                 }
                 else
                 {
+                    //this is needed as the "clear" button just sets the grid's visibility to
+                    //false
                     imageHolderGrid.Visibility = Visibility.Visible;
                     infoAboutPackGrid.Visibility = Visibility.Visible;
                 }
@@ -40,17 +48,23 @@ namespace whatsappStickerMaker
             }
         }
 
-
+        /// <summary>
+        /// Clears the grids and make them invisible
+        /// </summary>
         private void ClearButtonClick(object sender, RoutedEventArgs e)
         {
             if (gridCreate)
             {
                 imageHolderGrid.Visibility= Visibility.Hidden;
                 infoAboutPackGrid.Visibility = Visibility.Hidden;
+                ClearDataButtonClick(sender, e);
                 gridCreate = false;
             }
         }
 
+        /// <summary>
+        /// Clears the text boxes and image holders
+        /// </summary>
         private void ClearDataButtonClick(object sender, RoutedEventArgs e)
         {
             if (gridCreate)
@@ -60,22 +74,50 @@ namespace whatsappStickerMaker
                     child.ClearImage();
 
                 }
+                //clear textfields
+                var titleElement = (customInputText)infoAboutPackGrid.FindName("txtTitle");
+                var authorElement = (customInputText)infoAboutPackGrid.FindName("txtAuthor");
+                titleElement.Clear();
+                authorElement.Clear();
 
-                //todo clear data of info grid inputs
+                //clear pack icon
+                var iconImageElement = (imageHolder)infoAboutPackGrid.FindName("imagePackIcon");
+                iconImageElement.ClearImage();
+
+                //clear images
+                foreach (imageHolder child in imageHolderGrid.Children)
+                {
+                    child.ClearImage();
+                }
             }
         }
 
+        /// <summary>
+        /// Exports the whatsapp sticker pack to .wastickers format
+        /// </summary>
         private void ExportButtonClick(object sender, RoutedEventArgs e)
         {
             if (gridCreate)
             {
                 FileMethods fileMethods = new();
 
-                /*Validation validation = new();
+                Validation validation = new();
 
-                if (!validation.ValidateInput(infoAboutPackGrid)) {
+                bool isInvalidText = validation.ValidateTextFields(infoAboutPackGrid);
+
+                if (isInvalidText) {
+                    MessageBox.Show("Invalid text fields", "Text field error", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
-                }*/
+                }
+
+                bool isValidImages = validation.ValidateImages(imagesSet);
+
+                if (!isValidImages)
+                {
+                    MessageBox.Show("minimum of 3 images required","Image error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    // TODO error messages
+                    return;
+                }
 
                 //get title
                 var titleElement = (customInputText)infoAboutPackGrid.FindName("txtTitle");
@@ -117,12 +159,11 @@ namespace whatsappStickerMaker
                 fileMethods.CreateDir("output");
                 fileMethods.DeleteFilesInDir("output");
 
-
+                //we get the data from the zip then write to the .wasticker file format
                 string zipFilePath = string.Format("output/{0}.zip", title);
                 string wastickersFilePath = string.Format("output/{0}.wastickers", title);
 
                 fileMethods.DeleteFile(zipFilePath);
-
                 ZipFile.CreateFromDirectory(title, zipFilePath);
                 byte[] data = fileMethods.StreamFile(zipFilePath);
 
@@ -130,7 +171,9 @@ namespace whatsappStickerMaker
             }
         }
 
-
+        /// <summary>
+        /// initiate all the image holders.
+        /// </summary>
         private void InitImageGrid()
         {
             for (int i = 0; i < 3; i++)
@@ -139,18 +182,36 @@ namespace whatsappStickerMaker
                 {
                     String name = string.Format("image{0}", i * 10 + j);
 
-                    imageHolder imageHolder = new() {
+                    imageHolder ImageHolder  = new() {
                         //range will be [0,29]
-                        Name = name
+                        Name = name,
+                        Row=i,
+                        Col=j
                     };
-                    Grid.SetRow(imageHolder, i);
-                    Grid.SetColumn(imageHolder, j);
-                    imageHolderGrid.Children.Add(imageHolder);
-                    imageHolderGrid.RegisterName(name, imageHolder);
+
+                    //add event handling
+                    ImageHolder.ImageChanged += HandleImageChanged;
+
+                    Grid.SetRow(ImageHolder, i);
+                    Grid.SetColumn(ImageHolder, j);
+                    imageHolderGrid.Children.Add(ImageHolder);
+                    imageHolderGrid.RegisterName(name, ImageHolder);
                 }
             }
         }
 
+        /// <summary>
+        /// Event listener to the ImageChangedEvent event
+        /// </summary>
+        private void HandleImageChanged(object sender, ImageChangedEventArgs e)
+        {
+            //Sets the image row,col as "set"/true
+            imagesSet[e.Row,e.Col] = true;
+        }
+
+        /// <summary>
+        /// Creates the text fields and pack icon field
+        /// </summary>
         private void InitPackInfoGrid()
         {
             const int height = 100;
@@ -173,7 +234,7 @@ namespace whatsappStickerMaker
             imageHolder packIcon = new() { 
                 Height= 100,
                 Width = 100,
-                isPackIcon= true
+                IsPackIcon= true
             };
 
             Label lblPackIcon = new() { 

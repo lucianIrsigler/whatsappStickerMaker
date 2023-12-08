@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using whatsappStickerMaker.view.userControls;
 
@@ -12,21 +8,44 @@ namespace whatsappStickerMaker
     {
         public Validation() { }
 
-        public bool ValidateInput(Grid infoPack) {
-            return (ValidateTitle(infoPack) && ValidateAuthor(infoPack));
+        public bool ValidateTextFields(Grid infoPack) {
+            return (TitleIsEmpty(infoPack) || AuthorIsEmpty(infoPack));
         }
 
-        private bool ValidateTitle(Grid grid)
+        private bool TitleIsEmpty(Grid grid)
         {
             var tmp = (customInputText)grid.FindName("txtTitle");
             return (tmp.GetInputText() == "");
         }
 
-        private bool ValidateAuthor(Grid grid)
+        private bool AuthorIsEmpty(Grid grid)
         {
             var tmp = (customInputText)grid.FindName("txtAuthor");
             return (tmp.GetInputText() == "");
 
+        }
+
+        public bool ValidateImages(bool[,] imagesSet)
+        {
+            //min of 3
+            int count = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if (imagesSet[i, j])
+                    {
+                        count++;
+                    }
+                }
+            }
+
+            if (count < 3)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

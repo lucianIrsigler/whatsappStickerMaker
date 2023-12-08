@@ -1,11 +1,6 @@
 ﻿using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 
 namespace whatsappStickerMaker
@@ -43,6 +38,11 @@ namespace whatsappStickerMaker
 
         public void SaveImageWebp(string path, System.Windows.Controls.Image image)
         {
+            if (image == null)
+            {
+                return;
+            }
+
             BitmapSource bitmapSource = (BitmapSource)image.Source;
 
             using (MemoryStream memoryStream = new MemoryStream())

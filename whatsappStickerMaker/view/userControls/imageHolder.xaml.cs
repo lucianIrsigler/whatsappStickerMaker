@@ -1,33 +1,49 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace whatsappStickerMaker.view.userControls
 {
+
+    public delegate void Notify();
     /// <summary>
     /// Interaction logic for imageHolder.xaml
     /// </summary>
     public partial class imageHolder : UserControl
     {
-        public string fileName;
         public System.Windows.Controls.Image? imageSelected;
-        public bool isPackIcon = false;
+        public string fileName;
+        public event EventHandler<ImageChangedEventArgs> ImageChanged;
 
         public bool IsPackIcon { get; set; }
+        public bool ImageSet { get; set; }
+        public int Row { get; set; }
+        public int Col { get; set; }
 
         public imageHolder()
         {
             InitializeComponent();
+            ImageSet = false;
+            IsPackIcon = false;
         }
 
+        //sends row/col data back to the main page
+        protected virtual void OnImageChanged()
+        {
+            ImageChanged?.Invoke(this, new ImageChangedEventArgs(Row,Col));
+        }
+
+        public void TriggerEvent()
+        {
+            OnImageChanged();
+        }
+
+        /// <summary>
+        /// Left click allows the user to select a file from their filesystem
+        /// </summary>
         private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //todo resize images properly
@@ -39,44 +55,53 @@ namespace whatsappStickerMaker.view.userControls
             //file was selected
             if (result == true)
             {
-                System.Windows.Controls.Image selectedImage = new System.Windows.Controls.Image();
-
-                string selectedFilePath = openFileDialog.FileName;
+                Image selectedImage = new Image();
 
                 //whatsapp stickers are 512x512
                 double length;
 
-                _ = isPackIcon ? length = 96 : length = 512;
+                _ = IsPackIcon ? length = 96 : length = 512;
 
                 //selectedImage.SetValue(HeightProperty, length);
                 //selectedImage.SetValue(WidthProperty, length);
 
-
                 Uri fileURI = new Uri(openFileDialog.FileName);
-                BitmapImage imageOutput= new BitmapImage(fileURI);
+                BitmapImage imageOutput = new BitmapImage(fileURI);
 
                 selectedImage.Source = new TransformedBitmap(
-                    imageOutput, new ScaleTransform(length/imageOutput.PixelWidth,length/imageOutput.PixelHeight));
-                
+                    imageOutput, new ScaleTransform(length / imageOutput.PixelWidth, length / imageOutput.PixelHeight));
+
                 //selectedImage.Source = imageOutput;
                 UpdateImagePlaceholder(selectedImage, openFileDialog.SafeFileName);
+
+                //triggers the event for the listener to do something
+                TriggerEvent();
             }
         }
 
-        public void UpdateImagePlaceholder(System.Windows.Controls.Image NewImage, string FileName) {
+        public void UpdateImagePlaceholder(Image NewImage, string FileName)
+        {
             imageSelected = NewImage;
             imagePlaceholder.Source = imageSelected.Source;
-            if (IsPackIcon){
+
+            if (IsPackIcon)
+            {
+                //whatsapp sticker packs must have the pack icon be named "icon.png"
                 fileName = "icon.png";
             }
-            else {
+            else
+            {
                 fileName = FileName;
             }
+
+            ImageSet = true;
         }
+
         public void ClearImage()
         {
             imagePlaceholder.Source = null;
             imageSelected = null;
+            ImageSet = false;
             fileName = "";
         }
     }
