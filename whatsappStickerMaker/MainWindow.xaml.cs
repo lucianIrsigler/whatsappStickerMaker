@@ -12,6 +12,7 @@ namespace whatsappStickerMaker
     public partial class MainWindow : Window
     {
         private bool gridCreate = false;
+        private bool reorderAfterImageSelection = false;
 
         //used to track when an image has been set
         private bool[,] imagesSet = new bool[3,10];
@@ -88,6 +89,16 @@ namespace whatsappStickerMaker
                 foreach (imageHolder child in imageHolderGrid.Children)
                 {
                     child.ClearImage();
+                }
+
+
+                //reset imageSet matrix
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        imagesSet[i, j] = false;
+                    }
                 }
             }
         }
@@ -205,6 +216,46 @@ namespace whatsappStickerMaker
         /// </summary>
         private void HandleImageChanged(object sender, ImageChangedEventArgs e)
         {
+            if (reorderAfterImageSelection)
+            {
+                //When we reorder, for example if we have an image at 0,0 and we select another image at 2,1
+                //the image at 2,1 will go to 0,1
+
+                int nextAvailRow = -1;
+                int nextAvailCol = -1;
+                bool found = false;
+                for (int i = 0; i < 3; i++)
+                {
+                    for (int j = 0; j < 10; j++)
+                    {
+                        if (!imagesSet[i, j])
+                        {
+                            nextAvailRow = i;
+                            nextAvailCol=j;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found)
+                    {
+                        break;
+                    }
+                }
+                //we got the next avail row and col
+                String name = string.Format("image{0}", e.Row * 10 + e.Col);
+                var insertedImage = (imageHolder)imageHolderGrid.FindName(name);
+
+                String name1 = string.Format("image{0}", nextAvailRow * 10 + nextAvailCol);
+                var nextAvailableSlotImage = (imageHolder)imageHolderGrid.FindName(name1);
+
+                nextAvailableSlotImage.UpdateImagePlaceholder(insertedImage.imageSelected, insertedImage.Name);
+                insertedImage.ClearImage();
+
+                imagesSet[nextAvailRow, nextAvailCol] = true;
+                return;
+            }
+
+            //no need to reorder
             //Sets the image row,col as "set"/true
             imagesSet[e.Row,e.Col] = true;
         }
@@ -270,5 +321,14 @@ namespace whatsappStickerMaker
             infoAboutPackGrid.RegisterName("imagePackIcon", packIcon);
         }
 
+
+        private void reorderClicked(object sender, RoutedEventArgs e)
+        {
+            MenuItem? temp = e.OriginalSource as MenuItem;
+            if (temp != null)
+            {
+                reorderAfterImageSelection = temp.IsChecked;
+            }
+        }
     }
 }
