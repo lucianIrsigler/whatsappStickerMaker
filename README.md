@@ -1,7 +1,15 @@
 # whatsappStickerMaker
 
-Similar to sticker maker on android, this is an C# application that allows users to create whatsapp sticker packs(.wastickers).
+Similar to sticker maker on android, this is an C# application that allows users to create whatsapp sticker packs in the .wasticker format.
 
-The program allows users to select images from their computer, and converts it to the correct pixel size for a sticker(512x512) or a pack icon.
+The program allows the user to do the following:
+- Fill in author name
+- Fill in pack name
+- Select image for the pack icon(96x96 pixels)
+- Select images for the stickers(512x512 pixels)
+- Clear the data
+- Clear the grid
+- Export to .wasticker format
 
-It can create the sticker pack and convert the files to the correct format. The final part that needs to be fixed is that the pack needs to be recognized by sticker maker on android. And for a "select multiple photos" toggle button to be created
+The program uses custom controls for the various components. Additionally there is an event listener. The dependency inversion principle has been utilized as well 
+
