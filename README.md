@@ -27,6 +27,8 @@ The program works in a simple loop:
 4. If the option "Reorder after selection" is ticked in the options menu, once a sticker is added, it will automatically reorder the sticker.
 i.e) If the slots 1,2,3 are used, and the user decides to put a sticker at slot 6, the app will automatically move the sticker to slot 4
 
+## Visuals
+
 ## Highlights of the program
 - Dynamically stores information about the stickers. Meaning, that if a user wants to put 3 stickers only, regardless of which slots they use, the outputting sticker pack will be the same.
 i.e) If they put sticker 1,2,and 3 into slots 1,4,5. The output will be the same as if instead they put it into slot 1,2,3 rather
