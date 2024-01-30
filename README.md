@@ -29,6 +29,15 @@ i.e) If the slots 1,2,3 are used, and the user decides to put a sticker at slot 
 
 ## Visuals
 
+### Startup screen
+![Start up screen](https://github.com/lucianIrsigler/whatsappStickerMaker/blob/master/images/app_01.PNG)
+
+### Pack creation screen
+![Pack creation screen](https://github.com/lucianIrsigler/whatsappStickerMaker/blob/master/images/app_02.PNG)
+
+### Validation
+![Validation](https://github.com/lucianIrsigler/whatsappStickerMaker/blob/master/images/app_03.PNG)
+
 ## Highlights of the program
 - Dynamically stores information about the stickers. Meaning, that if a user wants to put 3 stickers only, regardless of which slots they use, the outputting sticker pack will be the same.
 i.e) If they put sticker 1,2,and 3 into slots 1,4,5. The output will be the same as if instead they put it into slot 1,2,3 rather
